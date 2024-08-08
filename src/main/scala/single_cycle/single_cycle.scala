@@ -7,7 +7,12 @@ class Processor extends Module {
     val io = IO(new Bundle {
         val reset = Input(Bool())
         val reg_zero = Input(Bool())
+        val o = Output(UInt())
+        val imm = Output(SInt())
+        val r6 = Output(SInt())
+        val ad = Output(UInt())
     })
+
 
     val pc = Module(new Program_Counter)
     val IM = Module(new Instruction_Memory)
@@ -19,15 +24,13 @@ class Processor extends Module {
     val ALU = Module(new ALU)
     val RAM = Module(new RAM)
 
-
-    val pc_value = WireInit(0.U(32.U))
-
     //PC
-    pc.io.reset := reset
-    pc.io.in := RegNext(pc_value, 0.U)
+    pc.io.reset := io.reset
 
     //PC Adder
     pc_adder.io.in := pc.io.out
+
+    io.o := pc.io.out
     val pc_add_val = pc_adder.io.out
     
 
@@ -119,8 +122,10 @@ class Processor extends Module {
         pc_mux2 := pc_imm
     }
 
-    pc_value := pc_mux2.asUInt
-    // pc.io.in := pc_mux2.asUInt
+    pc.io.in := RegNext(pc_mux2.asUInt, 0.U)
+    io.imm := IG.io.IType
+
+    
 
     //RAM
     RAM.io.Addr := ALU.io.output(9, 2)
@@ -129,4 +134,6 @@ class Processor extends Module {
     RAM.io.wrData := register.io.readdata2
 
     register.io.writedata := Mux(memtoreg, RAM.io.out, ALU.io.output)
+    io.r6 := Mux(memtoreg, RAM.io.out, ALU.io.output)
+    io.ad := ins(11, 7)
 }

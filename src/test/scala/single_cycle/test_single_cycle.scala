@@ -43,12 +43,12 @@ class ALU_Test extends FreeSpec with ChiselScalatestTester {
 class ALU_Control_Test extends FreeSpec with ChiselScalatestTester {
     "ALU Control Test" in{
         test(new ALUControl){ob1 =>
-        ob1.io.ALUOp.poke(0.U)
+        ob1.io.ALUOp.poke(2.U)
         ob1.io.funct3.poke(1.U)
         ob1.io.funct7.poke(0.U)
         ob1.clock.step(1)
 
-        ob1.io.outputSignal.expect(1.U)
+        ob1.io.outputSignal.expect(17.U)
         }
     }
 }
@@ -125,19 +125,35 @@ class RAMTest extends FreeSpec with ChiselScalatestTester {
   }
 }
 
+class Imm_Gen_Test extends FreeSpec with ChiselScalatestTester {
+  "Imm_Gen_Test" in {
+    test(new Immediate_Generation){c =>
+      c.io.inst.poke("b00000000000100000010000000100011".U)
+      c.io.SType.expect(0.S)
+      c.io.IType.expect(1.S)
+    }
+  }
+}
+
 class Single_Cycle_Test extends FreeSpec with ChiselScalatestTester {
     "Single Cycle Test" in{
         test(new Processor){ob1 =>
+        // ob1.RAM.memory(0).poke(16.S)
         ob1.io.reset.poke(1.B)
 
         ob1.clock.step(1)
         ob1.io.reset.poke(0.B)
         ob1.clock.step(1)
         ob1.clock.step(1)
+        ob1.clock.step(1)
+        ob1.clock.step(1)
+        ob1.clock.step(1)
+        ob1.clock.step(1)
         //ob1.pc.io.out.expect(4.U)
         // ob1.io.funct3.poke(1.U)
         // ob1.io.funct7.poke(0.U)
         // ob1.clock.step(1)
+        //0010011, 000
 
         // ob1.io.outputSignal.expect(1.U)
         }

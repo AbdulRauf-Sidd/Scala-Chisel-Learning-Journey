@@ -44,8 +44,6 @@ class ALUControl extends Module {
     mux_sel := 9.U
   }.elsewhen (andWires(6) === 1.B) {
     mux_sel := 8.U
-  }.elsewhen (andWires(6) === 1.B) {
-    mux_sel := 8.U
   }.elsewhen (and3 === 1.B) {
     mux_sel := 7.U
   }.elsewhen (and2 === 1.B) {
