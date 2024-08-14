@@ -9,7 +9,7 @@ class ALUControl extends Module {
     val ALUOp = Input(UInt(3.W))
     val funct7 = Input(UInt(1.W))
     val funct3 = Input(UInt(3.W))
-    val outputSignal = Output(UInt(4.W))  // Assuming the output is 4 bits as a placeholder
+    val outputSignal = Output(UInt(5.W))  // Assuming the output is 4 bits as a placeholder
   })
 
   // Intermediate wires

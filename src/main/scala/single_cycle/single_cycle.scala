@@ -11,6 +11,10 @@ class Processor extends Module {
         val imm = Output(SInt())
         val r6 = Output(SInt())
         val ad = Output(UInt())
+        val memad = Output(UInt())
+        val rd2 = Output(SInt())
+        val rd1 = Output(SInt())
+        val memout = Output(SInt())
     })
 
 
@@ -61,9 +65,9 @@ class Processor extends Module {
     when (extend_sel === 0.U) {
         IG_Mux := IG.io.IType
     }.elsewhen (extend_sel === 1.U) {
-        IG_Mux := IG.io.SType
-    }.elsewhen( extend_sel === 2.U) {
         IG_Mux := IG.io.UType
+    }.elsewhen( extend_sel === 2.U) {
+        IG_Mux := IG.io.SType
     }
 
     //ALU Control
@@ -128,12 +132,19 @@ class Processor extends Module {
     
 
     //RAM
-    RAM.io.Addr := ALU.io.output(9, 2)
+    // RAM.io.Addr := ALU.io.output(9, 2)
+    RAM.io.Addr := ALU.io.output.asUInt
     RAM.io.wr_en := control_unit.io.memWrite
     RAM.io.rd_en := control_unit.io.memRead
     RAM.io.wrData := register.io.readdata2
-
+    
     register.io.writedata := Mux(memtoreg, RAM.io.out, ALU.io.output)
     io.r6 := Mux(memtoreg, RAM.io.out, ALU.io.output)
     io.ad := ins(11, 7)
+
+    io.memad := ALU.io.output.asUInt
+    io.rd2 := register.io.readdata2
+
+    io.rd1 := memtoreg.asSInt
+    io.memout := RAM.io.out
 }

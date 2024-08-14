@@ -45,10 +45,10 @@ class Control_Unit extends Module {
     }
 
     val alu_bit2 = (~rformat && ~branch && ~itype && ~jalr && ~jal) 
-    val alu_bit1 = (~branch && ~load && ~store && ~itype)
+    val alu_bit1 = (~rformat && ~load && ~store && ~itype)
     val alu_bit0 = (~rformat && ~load && ~branch && ~lui)
 
-    val op_a_bit1 = ((~lui && ~jalr && jal) || (~lui && jalr && ~jalr) || (lui && ~jalr && ~jal))
+    val op_a_bit1 = ((~lui && ~jalr && jal) || (~lui && jalr && ~jal) || (lui && ~jalr && ~jal))
     val op_a_bit0 = (lui && ~jalr && ~jal)
     
     val pc_sel_bit1 = ((~branch && ~jal && jalr) || (~branch && jal && ~jalr))
